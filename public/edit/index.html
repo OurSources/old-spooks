@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Spooks Editor</title>
+		<style>
+			#tile-display div {
+				display: inline-block;
+				width: 16px;
+				height: 16px;
+				margin: 0 1px 1px 0;
+			}
+			
+			html, body {
+				width: 100%;
+				height: 100%;
+			}
+
+			body {
+				font-family: Arial;
+				margin: 0;
+				display: flex;
+				flex-flow: column;
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+				-khtml-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
+			
+			#menubar {
+				flex: 0 1 auto;
+				padding: 0;
+				margin: 0;
+				background-color: #fafafa;
+				border-bottom: 1px solid #bbb;
+			}
+			#menubar > li {
+				display: inline-block;
+			}
+			#menubar > li > span {
+				display: inline-block;
+				cursor: pointer;
+				padding: 4px 10px;
+				font-size: 0.9em;
+			}
+			#menubar > li:hover > span {
+				padding: 3px 9px;
+				background-color: #e5f3ff;
+				border: 1px solid #cce8ff;
+			}
+			#menubar > li > ol {
+				display: none;
+				position: absolute;
+				list-style: none;
+				padding: 2px;
+				box-shadow: 2px 2px 6px 0px rgba(0,0,0,0.5);;
+				background-color: #eee;
+				border: 1px solid #ccc;
+				z-index: 2;
+			}
+			#menubar > .active > ol {
+				display: block;
+			}
+			#menubar > li > ol > li > span {
+				cursor: pointer;
+				display: inline-block;
+				box-sizing: border-box;
+				width: 100%;
+				padding: 2px 4px;
+			}
+			#menubar > li > ol > li:hover > span {
+				background-color: #85c7f7;
+			}
+			#menubar > li > ol > .separator {
+				display: inline-block;
+				box-sizing: border-box;
+				width: 100%;
+				height: 1px;
+				background-color: #ccc;
+			}
+			
+			#toolbar {
+				flex: 0 1 auto;
+				height: 40px;
+				background-color: #eee;
+				border-bottom: 1px solid #bbb;
+				z-index: 1;
+			}
+			#toolbar > button {
+				position: relative;
+				width: 40px;
+				height: 40px;
+				padding: 4px;
+				border: 1px solid transparent;
+				background: url(tools.png);
+				background-clip: content-box;
+				outline: none;
+			}
+			#toolbar > button:hover::before {
+				content: "";
+				width: 40px;
+				height: 38px;
+				display: inline-block;
+				position: absolute;
+				top: 0;
+				left: -1px;
+				background-color: #d8e6f2;
+				box-sizing: border-box;
+				border: 1px solid #c0dcf3;
+				z-index: -2;
+			}
+			#toolbar > .selected::after {
+				content: "";
+				width: 40px;
+				height: 38px;
+				display: inline-block;
+				position: absolute;
+				top: 0;
+				left: -1px;
+				background-color: #c0dcf3;
+				box-sizing: border-box;
+				border: 1px solid #90c8f6;
+				z-index: -2;
+			}
+			
+			#workspace {
+				flex: 1 1 auto;
+				display: flex;
+			}
+			#workspace > div {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.view {
+				display: flex;
+				position: relative;
+				width: 100%;
+				height: 100%;
+			}
+			.view.top, .view.bottom {
+				flex-direction: column;
+			}
+			.view.left, .view.right {
+				flex-direction: row;
+			}
+			.view.left:nth-child(0) {
+				flex: none;
+			}
+			
+			#menu {
+				flex: none;
+				position: relative;
+				padding-right: 6px;
+				
+				background-color: #eee;
+				border-right: 1px solid #999;
+			}
+			#menu-resize {
+				position: absolute;
+				top: 0;
+				right: 0;
+				width: 6px;
+				height: 100%;
+				cursor: e-resize;
+			}
+			
+			#tileset-select {
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				border-bottom: 1px solid #999;
+			}
+			#tileset-select > .main {
+				flex: 1 1 auto;
+			}
+			#tileset-select > .toolbar {
+				flex: 0 0 auto;
+			}
+			#tilesets {
+				padding: 0;
+				margin: 0;
+				height: 24px;
+				list-style: none;
+				overflow: auto;
+				white-space: nowrap;
+				margin: 4px 2px 0 2px;
+				font-size: 0;
+			}
+			#tilesets, #tilesets > .container {
+				transform:rotateX(180deg);
+				-ms-transform:rotateX(180deg);
+				-webkit-transform:rotateX(180deg);
+				height: 24px;
+			}
+			#tilesets > .container > li {
+				display: inline-block;
+				position: relative;
+				bottom: 0;
+				font-size: 14px;
+				background-color: #eee;
+				border: 1px solid #cacaca;
+				border-bottom: none;
+				border-right: none;
+				padding: 2px 6px;
+				cursor: default;
+			}
+			#tilesets > .container > li.selected {
+				background-color: #fff;
+				border: 1px solid #cacaca;
+				border-bottom: none;
+				padding-top: 5px;
+			}
+			#tilesets > .container > li:not(.selected):hover {
+				background-color: #ceF;
+			}
+			#tilesets > .container > li.selected + li {
+				border: 1px solid #cacaca;
+				border-bottom: none;
+				border-left: none;
+				border-right: none;
+			}
+			#tilesets > .container > li.selected + li:last-child {
+				border: 1px solid #cacaca;
+				border-bottom: none;
+				border-left: none;
+			}
+			#tilesets > .container > li:last-child {
+				border: 1px solid #cacaca;
+				border-bottom: none;
+			}
+			#tile-display {
+				width: 100%;
+				height: 300px;
+				overflow: auto;
+				white-space: nowrap;
+				line-height: 10px;
+				background-color: #ccc;
+			}
+			#tile-display > .selected:before {
+				display: block;
+				background: rgba(0, 200, 256, 0.65);
+				width: 16px;
+				height: 16px;
+				content: "";
+			}
+			#world, #tile-display > div {
+				image-rendering: -moz-crisp-edges;
+				image-rendering: -o-crisp-edges;
+				image-rendering: -webkikt-optimize-contrast;
+				image-rendering: pixelated;
+				image-rendering: crisp-edges;
+				-ms-interpolation-mode: crisp-edges;
+			}
+			#tile-display-zoom {
+				float: right;
+			}
+			
+			.small-button {
+				background: url(tools.png);
+				width: 32px;
+				height: 32px;
+				padding: 0;
+				border: none;
+				box-sizing: content-box;
+			}
+			.small-button:focus {
+				outline: none;
+			}
+			.small-button:not(:disabled):hover {
+				background-color: #e5f3ff;
+				border: 1px solid #cce8ff;
+				margin: -1px;
+				width: 32px;
+				height: 32px;
+			}
+			.small-button:disabled {
+				-webkit-filter: grayscale(100%);
+				filter: grayscale(100%);
+			}
+			
+			#placeCanvas {
+				position: absolute;
+			}
+
+			#viewport {
+				flex: auto;
+				position: relative;
+				overflow: auto;
+			}
+			
+			#world {
+				position: relative;
+				height: 100%;
+				overflow: hidden;
+			}
+			#grid {
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			#grid.hidden {
+				display: none;
+			}
+			
+			#statusbar {
+				flex: 0 1 auto;
+				height: 25px;
+				padding: 0 5px;
+				background-color: #eee;
+				border-top: 1px solid #ccc;
+			}
+			#statusbar > * {
+				position: relative;
+				top: 3px;
+			}
+			#statusbar .right {
+				float: right;
+			}
+			
+			#tileset-selector {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				width: 80%;
+				height: 80%;
+				background-color: #ddd;
+				border: 1px solid #bbb;
+			}
+			#tileset-selector > .close {
+				position: absolute;
+				top: 0;
+				right: 0;
+				margin: 4px;
+			}
+			#tileset-selector-list {
+				list-style: none;
+				padding: 0;
+				margin: 15px;
+				height: calc(100% - 30px);
+				overflow: auto;
+			}
+			#tileset-selector-list > li {
+				display: inline-flex;
+				flex-direction: column;
+				width: 150px;
+				height: 150px;
+				text-align: center;
+				margin: 2px;
+				padding: 6px;
+			}
+			#tileset-selector-list > li:hover {
+				background-color: #e5f3ff;
+				border: 1px solid #cce8ff;
+				margin: 1px;
+			}
+			#tileset-selector-list > li > .title {
+				flex: 0 0 auto;
+				display: block;
+				font-weight: bold;
+			}
+			#tileset-selector-list > li > img {
+				flex: 0 0 auto;
+				max-width: 100%;
+				max-height: 100%;
+			}
+		</style>
+		<script src="ui.js"></script>
+		<script src="engine.js"></script>
+		<script src="main.js"></script>
+	</head>
+	<body>
+		<ol id="menubar"></ol>
+		<div id="toolbar">
+			<button id="tool-stamp" class="selected" title="Stamp Brush" style="background-position: 3px 3px;"></button>
+			<button id="tool-pan" title="Pan Tool" style="background: url(https://openclipart.org/image/32px/svg_to_png/23492/rugby471-Tango-Style-Frying-Pan.png); background-repeat: no-repeat; background-position: 3px 3px;"></button>
+			<button id="tool-terrain" title="Terrain Brush" style="background-position: 3px -61px;"></button>
+			<button id="tool-fill" title="Bucket Fill Tool" style="background-position: -29px 3px;"></button>
+			<button id="tool-eraser" title="Eraser" style="background-position: -61px 3px;"></button>
+			<button id="tool-select" title="Rectangular Select" style="background-position: -93px 3px;"></button>
+			<button id="tool-magic" title="Magic Wand" style="background-position: -29px -61px;"></button>
+			<button id="tool-same" title="Select Same Tile" style="background-position: -61px -61px;"></button>
+		</div>
+		<div id="workspace" class="view left">
+			<div id="menu" class="view top" style="width:300px;">
+				<div id="tileset-select" style="height: 400px;">
+					<div class="main">
+						<ol id="tilesets">
+							<div id="tilesets-list" class="container"></div>
+						</ol>
+						<div id="tile-display"></div>
+					</div>
+					<div class="toolbar">
+						<button id="add-tileset" class="small-button" style="background-position: 0 -96px;"></button>
+						<button id="remove-tileset" class="small-button" style="background-position: -32px -96px;" disabled></button>
+						<select id="tile-display-zoom"></select>
+					</div>
+				</div>
+				<div id="explorer">
+					<div class="main">
+						<div id="explorer-view"></div>
+					</div>
+					<div class="toolbar">
+						
+					</div>
+				</div>
+				<div id="menu-resize"></div>
+			</div>
+			<div id="viewport">
+				<div id="world"></div>
+				<svg id="grid" width="100%" height="100%">
+					<defs>
+						<pattern id="grid-pattern" width="16" height="16" patternUnits="userSpaceOnUse">
+							<path id="grid-path" d="M 16 0 L 0 0 0 16" fill="none" stroke="gray" stroke-width="0.5" />
+						</pattern>
+					</defs>
+					<rect id="grid-rect" width="100%" height="100%" fill="url(#grid-pattern)" />
+				</svg>
+			</div>
+		</div>
+		<div id="statusbar">
+			<span>Random mode:</span>
+			<input id="random-mode" type="checkbox">
+			<div class="right">
+				<select id="map-zoom"></select>
+			</div>
+		</div>
+		<div id="tileset-selector" style="display:none;">
+			<button class="close" onclick="this.parentElement.style.display='none';">x</button>
+			<ul id="tileset-selector-list"></ul>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,93 @@
+┏━━━━━┳━━━━━┳━━━━━┓
+┃-1, 1 ┃ 0, 1 ┃ 1, 1 ┃ 
+┃      ┃      ┃      ┃ 
+┣━━━━━╋━━━━━╋━━━━━┫
+┃-1, 0 ┃ 0, 0 ┃ 1, 0 ┃
+┃      ┃      ┃      ┃
+┣━━━━━O━━━━━╋━━━━━┫ O = x: 0, y: 0
+┃-1,-1 ┃ 0,-1 ┃ 1,-1 ┃
+┃      ┃      ┃      ┃
+┗━━━━━┻━━━━━┻━━━━━┛ 
+
+ChunkData = {
+	tilesets: [], // List of tileset id's, get tileset data from spooks.me/assets/tilesets/[id].png/json
+	tiles: [], // Array of [chunkSize x chunkSize] tile id's, Every tileset occupies 2^14 id's
+	... // Add objects and additional stuff later
+}
+
+[
+	{
+		name: "Tileset",
+		src: "http://spooks.me/images/tiles/tileset.png",
+		width: 40,
+		height: 25
+	},
+	{
+		name: "Sand",
+		src: "http://spooks.me/images/tiles/sand.png",
+		width: 40,
+		height: 25
+	},
+	{
+		name: "Caves",
+		src: "http://spooks.me/images/tiles/caves.png",
+		width: 40,
+		height: 25
+	},
+	{
+		name: "Snow",
+		src: "http://spooks.me/images/tiles/snow.png",
+		width: 40,
+		height: 25
+	},
+	{
+		name: "Indoors",
+		src: "http://spooks.me/data/images/tiles/indoors.png",
+		width: 40,
+		height: 25
+	},
+	{
+		name: "Special",
+		src: "http://spooks.me/data/images/tiles/special.png",
+		width: 40,
+		height: 25
+	},
+	{
+		name: "Transparent Tiles",
+		src: "http://spooks.me/data/images/tiles/transparenttiles.png",
+		width: 40,
+		height: 25
+	},
+	{
+		name: "House",
+		src: "http://spooks.me/images/tiles/house.png",
+		width: 28,
+		height: 13
+	},
+	{
+		name: "House2",
+		src: "http://spooks.me/data/images/tiles/house2.png",
+		width: 28,
+		height: 13
+	},
+	{
+		name: "House3",
+		src: "http://spooks.me/data/images/tiles/house3.png",
+		width: 28,
+		height: 13
+	},
+	{
+		name: "Shop",
+		src: "http://spooks.me/data/images/tiles/shop.png",
+		width: 15,
+		height: 12
+	},
+	{
+		name: "Lightning",
+		src: "http://spooks.me/data/images/tiles/lightning.png",
+		width: 44,
+		height: 9
+	}
+]
+
+22F72880221462626

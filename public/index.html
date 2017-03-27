@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<title>Spooks</title>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<script>location.protocol[5]?0:location.protocol="https:"</script>
+		<script src="https://www.google.com/recaptcha/api.js"></script>
+		<script src="js/ui.js"></script>
+		<script src="js/engine.js"></script>
+		<script src="js/net.js"></script>
+		<script src="js/main.js"></script>
+		<script src="js/zxcvbn.js" async></script>
+	</head>
+	<body>
+		<noscript>
+			<h1>Spooks needs JavaScript to work, but your browser doesn't support it, or you may have disabled it.</h1>
+		</noscript>
+	<!--<div id="header">
+			<div class="left">
+				<button id="logout">Logout</button>
+			</div>
+			<div class="center">[<span id="world-name">world</span>] <span id="room-name">room</span></div>
+			<div class="right">
+				<button id="help-button"></button>
+			</div>
+		</div>-->
+		<div id="viewport">
+			<div id="world"></div>
+		</div>
+	    <div id="overlay">
+		<!--<div id="about" class="infobox" style="display:none;">
+				<h1>Spooks.me</h1>
+				<p>Spooks.me is a site where you can create your own worlds... 'nd stuff</p>
+		        <h1>Help</h1>
+				<p>You can use some chat commands, these are:</p>
+				<ul>
+					<li>/help</li>
+					<li>/me</li>
+				</ul>
+			</div>-->
+			<div id="windows"></div>
+			<div id="login">
+				<div id="login-error" style="display: none;"></div>
+				<div id="login-login">
+					<h1>Login</h1>
+					<a id="register-link" href="#">Register</a>
+					<br>
+					<span>Username:</span>
+					<input id="login-username" type="text">
+					<br>
+					<span>Password:</span>
+					<input id="login-password" type="password">
+					<br>
+					<button id="login-button">Login</button>
+					<h3>Play as guest</h3>
+				</div>
+				<div id="login-register" style="display: none;">
+					<h1>Register</h1>
+					<a id="login-link" href="#">Login</a>
+					<br>
+					<span>Username:</span>
+					<input id="register-username" type="text">
+					<br>
+					<span>Password:</span>
+					<input id="register-password" type="password">
+					<br>
+					<span>Verify password:</span>
+					<input id="register-verify" type="password">
+					<br>
+					<button id="register-button" disabled>Register</button>
+				</div>
+				<div class="g-recaptcha" data-callback="recaptchaCallback" data-sitekey="6LdxZhYUAAAAAM2VaT3xgwBZvrlEV0BIfkEyc6M7"></div>
+			</div>
+		</div>
+	</body>
+</html>
