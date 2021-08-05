@@ -244,7 +244,7 @@ function Client(socket) {
 }
 
 Client.prototype.handleWSMessage = function handleWSMessage(message) {
-	if (typeof message !== "string") return this.error("Invalid message");
+	if (typeof message !== "string") return this.error(1003, "Invalid message");
 	try {
 		message = JSON.parse(message);
 	} catch(e) {
